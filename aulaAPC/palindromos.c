@@ -2,30 +2,41 @@
 #include <string.h>
 
 int main(){
-    int i,j,tamanho,aux=1;
-    scanf("%d",&tamanho);
-    char string[tamanho+1];
-    scanf("%s",string);
 
-    i=tamanho-1;
-    j=0;
-    while(j<tamanho)
-    {
-        if(string[i]!=string[j])
-        {
-            aux=0;
-            break;
-        }
-        i--;
-        j++;
+int QuantidadeCarcteres, tamanhoString, i,aux=1;
+char palindromo[101];
+
+scanf("%d", &QuantidadeCarcteres);
+scanf("%s", palindromo);
+
+tamanhoString = strlen(palindromo) - 1;
+
+i = 0;
+while(tamanhoString > 0 && i < tamanhoString + 1){
+
+    if(palindromo[i] != palindromo[tamanhoString]){
+
+        aux=0;
+        i = i + (tamanhoString + 1);
     }
-    if(aux)
-    {
+    i++;
+    tamanhoString--;
+
+    /*if(palindromo[i] == palindromo[tamanhoString] && i != tamanhoString){
+        i++;
+        tamanhoString--;
+    }
+
+    if(palindromo[i] == palindromo[tamanhoString] && i == tamanhoString){
         printf("eh palindromo\n");
-    }else
-    {
-        printf("nao eh palindromo\n");
+        i = i + (tamanhoString + 1);
+    }*/
+}
+    if(aux){
+        printf("eh palindromo");
+    }else{
+        printf("nao eh palindromo");
     }
-    
-    return 0;
-}   
+
+return 0;
+}
