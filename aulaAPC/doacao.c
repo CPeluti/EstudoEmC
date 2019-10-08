@@ -1,48 +1,52 @@
 #include <stdio.h>
 int main(){
 
-    int i,tamanho,n;
+    int i,tamanho,n,aux=1;
     scanf("%d %d",&n,&tamanho);
     int doacao[n],will[n],calcados[n];
-    doacao[0]=0;will[0]=0;
 
     i=0;
     while(i<n){
         scanf("%d",&calcados[i]);
-        if(calcados[i]<tamanho){
-            doacao[i]=calcados[i];
-            will[i]=0;
-        }else{
-            will[i]=calcados[i];
+        if(calcados[i]>=tamanho)
+        {
+             will[i]=calcados[i];
             doacao[i]=0;
+            
+        }else 
+        {
+           doacao[i]=calcados[i];
+           will[i]=0;
         }
         i++;
     }
     i=0;
     printf("Will: ");
-    while (i<n)
-    {
-        
-        if(doacao[0]==0&&i==0){
+    while (i<n+1){
+        if(i == n&&aux){
             printf("0");
-            break;
-        }else if(doacao[i]==0){
-        }else
-        {
-            printf("%d ",will[i]);
         }
+        if(will[i]&&i!=n){
+            printf("%d ", will[i]);
+            aux = 0;
+
+        }
+        i++;
     }
     printf("\nDoacao: ");
     i=0;
-    while (i<n)
+    aux=1;
+    while (i<n+1)
     {
-        if(doacao[i]==0&&i==0){
-            printf("0");
-            break;
-        }else if(doacao[i]==0){
-        }else
+        if(i==n&&aux)
+        {
+            printf("0 ");
+            aux=1;
+        }
+        if(doacao[i]&&i!=n)
         {
             printf("%d ",doacao[i]);
+            aux=0;
         }
         
         i++;
