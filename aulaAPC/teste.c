@@ -1,27 +1,56 @@
 #include <stdio.h>
-#include <string.h>
 
-int main()
-{
-    int num_letras, i;/*retirei as variaveis length e a*/
-    scanf("%d", &num_letras);/*num_letras é o tamanho da string*/
-    char palavra[num_letras+1];/*mudei a ordem de declaração e coloquei num_letras+1 como tamanho(tanto de letras + \0)*/
-    
+int main(){
 
-    scanf("%s", palavra);
-    
-    i=0;
-    while (i<num_letras){
-        if(palavra[i]==palavra[(num_letras-1)-i]){/* aqui eu usei o proprio i pra pegar o final e ir decrementando, ja que conforme o i aumento, a posição (num_letras-1)-i diminui*/
-            i++;
+    int n, i, j;
+
+    scanf("%d", &n);
+    int mat[n][n];
+
+    for(i=0; i<n; i++){
+        for(j=0; j<n; j++){
+
+            /* 
+            i == 0; i+1;
+            i == 1; 2
+            j == 0; j+1
+            n-i
+            n-j 
+            */
+
+            if(i+1 <= j+1 && i+1 <= n-i && i+1 <= n-j){
+                mat[i][j] = i+1;
+                continue;
+            }
+
+            else if(j+1 <= i+1 && j+1 <= n-i && j+1 <= n-j){
+                mat[i][j] = j+1;
+                continue;
+            }
+
+            else if(n-i <= i+1 && n-i <= j+1 && n-i <= n-j){
+                mat[i][j] = n-i;
+                continue;
+            }
+
+            else if(n-j <= i+1 && n-j <= j+1 && n-j <= n-i){
+                mat[i][j] = n-j;
+            }
+            
         }
-        else
-            i=num_letras+1;/*isso aqui tira do loop e serve pra não entrar no if*/
     }
 
-    if (i==num_letras) /*tirei o if(i==1), ja que não me parece ser necessario*/
-        printf("eh palindromo");
-    else
-        printf("nao eh palindromo");
-    return 0;
+    for(i=0; i<n; i++){
+        for(j=0; i<n; j++){
+
+            if(mat[i][j] > 10){
+                printf(" %d ", mat[i][j]);
+            }
+            else{
+                printf("  %d ", mat[i][j]);
+            }
+        }
+    }
+
+return 0;
 }
