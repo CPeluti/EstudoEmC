@@ -10,7 +10,7 @@ void preencheMatriz(int linhas,int colunas,int numero,int matriz[linhas][colunas
 			matriz[i][j]=numero;	
 		}
 	}
-}
+
 void printMatriz(int linhas,int colunas,int matriz[linhas][colunas]){
 	int i,j;
 	system(CLEAR);
