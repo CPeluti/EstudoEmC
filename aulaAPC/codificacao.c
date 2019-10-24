@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <string.h>
 
-int potencia(int a,int b){/*mesma coisa que pow, mas como não podia usar o math.h tive que fazer pra isso aqui pra deixar o código legivel*/
+int potencia(int a,int b){
     if(b==0)
     {
         return 1;
