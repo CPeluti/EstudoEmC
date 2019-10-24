@@ -1,33 +1,24 @@
 #include <stdio.h>
 int main(){
 
-	int tamanho,i,j,numero[4],z,k,aux;
+	int tamanho,i,j,k;
 	scanf("%d",&tamanho);
 	int matriz[tamanho][tamanho];
-	for(i=0;i<tamanho;i++){
-		for(j=0;j<tamanho;j++){			
-			numero[0]=i++;
-			numero[1]=j++;
-			numero[2]=tamanho-i;
-			numero[3]=tamanho-j;
-			for(z=0;z<4;z++){
-				for(k=0;k<4;k++){
-					if(numero[z]<numero[k]){
-						aux=numero[z];
-						numero[z]=numero[k];
-						numero[k]=aux;
-					}
 
-				}
+	for(k=0;k<tamanho;k++){
+		for(i=k;i<tamanho-k;i++){			
+			for(j=k;j<tamanho-k;j++){
+				matriz[i][j]=k+1;
 			}
-			matriz[i][j]=numero[0];
-
 		}
-
 	}
 	for(i =0;i<tamanho;i++){
 		for(j=0;j<tamanho;j++){
-			printf("%d ",matriz[i][j]);
+			if(matriz[i][j]>=10){
+				printf(" %d ",matriz[i][j]);
+			}else{
+				printf("  %d ",matriz[i][j]);
+			}
 		}
 		printf("\n");
 	}
