@@ -20,7 +20,7 @@ int matrizPreenchida(){
 }
 void ImprimeJogo(){
 	int i,j;
-	printf("\n");
+
 	for(i=0;i<LINHAS;i++){
 		for(j=0;j<COLUNAS;j++){
 			printf(" %c ",matriz[i][j]);
@@ -44,14 +44,17 @@ int ImprimeStatus(int status) {
 	if(status==0){
 		printf("Posicao invalida\n");
 		return 0;
-	}else if(status==1){
-		printf("Ganhou");
-		return 1;
+	}else if(status==3){
+		printf("Ganhou\n");
+		return 3;
 	}else if(status==2){
-		printf("Empatou");
+		printf("Empatou\n");
 		return 2;
+	}else{
+		return 0;
 	}
-	return 0;
+	
+	
 
 }
 
@@ -59,25 +62,28 @@ int ImprimeStatus(int status) {
 int JogoTerminou() {
 
 	if((matriz[0][0]=='O'&&matriz[0][1]=='O'&&matriz[0][2]=='O')||(matriz[0][0]=='X'&&matriz[0][1]=='X'&&matriz[0][2]=='X')){
-		return 1; 
+		return 3;
 	}else if((matriz[0][0]=='O'&&matriz[1][1]=='O'&&matriz[2][2]=='O')||(matriz[0][0]=='X'&&matriz[1][1]=='X'&&matriz[2][2]=='X')){
-		return 1; 
+		return 3; 
 	}else if((matriz[0][0]=='O'&&matriz[1][0]=='O'&&matriz[2][0]=='O')||(matriz[0][0]=='X'&&matriz[1][0]=='X'&&matriz[2][0]=='X')){
-		return 1; 
+		return 3; 
 	}else if((matriz[0][2]=='O'&&matriz[1][2]=='O'&&matriz[2][2]=='O')||(matriz[0][2]=='X'&&matriz[1][2]=='X'&&matriz[2][2]=='X')){
-		return 1; 
+		return 3; 
 	}else if((matriz[0][2]=='O'&&matriz[1][1]=='O'&&matriz[2][0]=='O')||(matriz[0][2]=='X'&&matriz[1][1]=='X'&&matriz[2][0]=='X')){
-		return 1; 
+		return 3; 
 	}else if((matriz[2][0]=='O'&&matriz[2][1]=='O'&&matriz[2][2]=='O')||(matriz[2][0]=='X'&&matriz[2][1]=='X'&&matriz[2][2]=='X')){
-		return 1; 
+		return 3; 
 	}else if((matriz[1][1]=='O'&&matriz[0][1]=='O'&&matriz[2][1]=='O')||(matriz[1][1]=='X'&&matriz[0][1]=='X'&&matriz[2][1]=='X')){
-		return 1; 
+		return 3; 
 	}else if((matriz[1][1]=='O'&&matriz[1][0]=='O'&&matriz[1][2]=='O')||(matriz[1][1]=='X'&&matriz[1][0]=='X'&&matriz[1][2]=='X')){
-		return 1; 
+		return 3; 
 	}else if(matrizPreenchida()){
 		return 2;
+	}else{
+		return 1;
 	}
-	return 3;
+	
+	
 }
 
 int main()
