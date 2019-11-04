@@ -17,16 +17,21 @@ char tabuleiro[15][28];
 int tempo; 
 /*tempo que falta para a partida acabar*/
 int tempo_partida=DURACAO_PARTIDA;
-
+/* tempo em segundos do momento atual*/
 long int tempo_atual;
-
+/*tempo em segundos de quado foi iniciado a jogatina*/
 long int tempo_start;
-
-/*Posição do boneco*/
+/*tempo em que a bomba foi iniciada*/
+long int tempo_start_bomba;
+/*Posicao do boneco*/
 /*PosicaoBoneco[0] é o eixo x & PosicaoBoneco[1] é o eixo y*/
 int posicaoBoneco[2]={13,1};
-
+/*numero de inimigos restantes*/
 int numeroDeInimigos=0;
+/*existe bomba*/
+int existe_bomba=0;
+/*posicao da bomba*/
+int posicaoBomba[2];
 
 void clear(){
 	printf("\n");
@@ -37,6 +42,14 @@ void clear(){
 int atualizaTempo(){
 	tempo_partida=DURACAO_PARTIDA-(tempo_atual-tempo_start);
 	if(tempo_partida<=0){
+		return 4;
+	}else{
+		return 404;
+	}
+}
+int atualizaTempoBomba(){
+	
+	if((tempo-(tempo_atual-tempo_start_bomba))<=0){
 		return 4;
 	}else{
 		return 404;
@@ -97,11 +110,57 @@ void menu(int select){
 			printf("TEMPO: %d\n\n",tempo_partida);
 			printf("A = ESQUERDA	 	D = DIREITA 	 	S = CIMA\nX = BAIXO 		B = BOMBA 		E = ENCERRAR\n");
 			printaMatriz();
-			printf("%d",tempo);
 			break;
 		default:
 		break;
 	}
+}
+
+void criaBomba(){
+	tabuleiro[posicaoBoneco[0]][posicaoBoneco[1]]='*';
+	posicaoBomba[0]=posicaoBoneco[0];
+	posicaoBomba[1]=posicaoBoneco[1];
+	/*setta o tempo da bomba*/
+	tempo=RAND(MEDIA_TEMPO,ERRO_TEMPO);
+	/*salva o instante que a bomba foi colocada*/
+	tempo_start_bomba=time(0);
+	existe_bomba=1;
+
+}
+int explodeBomba(){
+	int flag=404;
+	if((tabuleiro[posicaoBomba[0]+1][posicaoBomba[1]]=='&')||(tabuleiro[posicaoBomba[0]-1][posicaoBomba[1]]=='&')||(tabuleiro[posicaoBomba[0]][posicaoBomba[1]+1]=='&')||(tabuleiro[posicaoBomba[0]][posicaoBomba[1]-1]=='&')||(posicaoBoneco[0]==posicaoBomba[0]&&posicaoBoneco[1]==posicaoBomba[1])){
+		flag=2;
+		tabuleiro[posicaoBoneco[0]][posicaoBoneco[1]]=' ';
+	}
+	if(tabuleiro[posicaoBomba[0]+1][posicaoBomba[1]]=='@'){
+		numeroDeInimigos--;
+		tabuleiro[posicaoBomba[0]+1][posicaoBomba[1]]=' ';
+	}if(tabuleiro[posicaoBomba[0]-1][posicaoBomba[1]]=='@'){
+		numeroDeInimigos--;
+		tabuleiro[posicaoBomba[0]-1][posicaoBomba[1]]=' ';
+	}if(tabuleiro[posicaoBomba[0]][posicaoBomba[1]+1]=='@'){
+		numeroDeInimigos--;
+		tabuleiro[posicaoBomba[0]][posicaoBomba[1]+1]=' ';
+	}if(tabuleiro[posicaoBomba[0]][posicaoBomba[1]-1]=='@'){
+		numeroDeInimigos--;
+		tabuleiro[posicaoBomba[0]][posicaoBomba[1]-1]=' ';
+	}if(tabuleiro[posicaoBomba[0]+1][posicaoBomba[1]]=='#'){
+		numeroDeInimigos--;
+		tabuleiro[posicaoBomba[0]+1][posicaoBomba[1]]=' ';
+	}if(tabuleiro[posicaoBomba[0]-1][posicaoBomba[1]]=='#'){
+		numeroDeInimigos--;
+		tabuleiro[posicaoBomba[0]-1][posicaoBomba[1]]=' ';
+	}if(tabuleiro[posicaoBomba[0]][posicaoBomba[1]+1]=='#'){
+		numeroDeInimigos--;
+		tabuleiro[posicaoBomba[0]][posicaoBomba[1]+1]=' ';
+	}if(tabuleiro[posicaoBomba[0]][posicaoBomba[1]-1]=='#'){
+		numeroDeInimigos--;
+		tabuleiro[posicaoBomba[0]][posicaoBomba[1]-1]=' ';
+	}
+	tabuleiro[posicaoBomba[0]][posicaoBomba[1]]=' ';
+	existe_bomba=0;
+	return flag;	
 }
 
 
@@ -121,6 +180,8 @@ int funcoesInput(int input){
 						tabuleiro[posicaoBoneco[0]][posicaoBoneco[1]]='&';
 						return 1;
 					}	
+				}else if(tabuleiro[posicaoBoneco[0]][posicaoBoneco[1]-1]=='@'){
+					return 3;
 				}else{
 					return 1;
 				}
@@ -140,6 +201,9 @@ int funcoesInput(int input){
 						tabuleiro[posicaoBoneco[0]][posicaoBoneco[1]]='&';
 						return 1;
 					}
+
+				}else if(tabuleiro[posicaoBoneco[0]][posicaoBoneco[1]+1]=='@'){
+					return 3;
 				}else{
 					return 1;
 				}
@@ -159,6 +223,8 @@ int funcoesInput(int input){
 						tabuleiro[posicaoBoneco[0]][posicaoBoneco[1]]='&';
 						return 1;
 					}
+				}else if(tabuleiro[posicaoBoneco[0]-1][posicaoBoneco[1]]=='@'){
+					return 3;
 				}else{
 					return 1;
 				}
@@ -177,6 +243,8 @@ int funcoesInput(int input){
 						tabuleiro[posicaoBoneco[0]][posicaoBoneco[1]]='&';
 						return 1;
 					}
+				}else if(tabuleiro[posicaoBoneco[0]+1][posicaoBoneco[1]]=='@'){
+					return 3;
 				}else{
 					return 1;
 				}
@@ -185,7 +253,11 @@ int funcoesInput(int input){
 				return 0;
 
 			}else if(input=='B'||input=='b'){
-
+				if(!existe_bomba){
+					criaBomba();
+				}else{
+					return 1;
+				}
 				return 1;
 			}else{
 				return 1;
@@ -200,7 +272,7 @@ void preencheMatriz(){
 		for(j=1;j<27;j++){
 			if(tabuleiro[i][j]==' '&&(i!=13||j!=1)){
 				numero = RAND(10,10);
-				if(numero < 10){
+				if(numero < 5){
 					tabuleiro[i][j]='#';
 				}else if(numero<11&&numero>=10){
 					tabuleiro[i][j]='@';
@@ -218,16 +290,33 @@ void preencheMatriz(){
 int fimDeJogo(int type){
 	switch(type){
 		case 0:
-			printf("Jogo finalizado com sucesso!\n");
+		clear();
+			printaMatriz();
+			printf("\nJogo finalizado com sucesso!\n");
 			return 1;
 			break;
 		case 2:
-			printf("Que pena, você se explodiu. Você Perdeu!!\n");
+			clear();
+			printaMatriz();
+			printf("\nQue pena, você se explodiu. Você Perdeu!!\n");
 			return 1;
 			break;
-		
+		case 3:
+			clear();
+			printaMatriz();
+			printf("\nQue pena, você foi morto por um inimigo. Você Perdeu!!\n");
+			return 1;
+			break;
 		case 4:
-			printf("Que pena, Tempo esgotado. Você Perdeu!!\n");
+			clear();
+			printaMatriz();
+			printf("\nQue pena, Tempo esgotado. Você Perdeu!!\n");
+			return 1;
+			break;
+		case 5:
+			clear();
+			printaMatriz();
+			printf("\nVitoria! todos os inimigos foram eliminados.\n");
 			return 1;
 			break;
 
@@ -239,7 +328,6 @@ int fimDeJogo(int type){
 
 
 void rotinaDeStart(){
-
 	tempo_start=time(0);
 	tempo_atual=time(0);
 	srand(time(0));
@@ -249,12 +337,17 @@ void rotinaDeStart(){
 
 
 int main(){
+	char inputMenu;
 	inicializaTabuleiro();
 	menu(1);
 	
 	printf("Tecle <enter> para começar o jogo\n");
-
-	char inputMenu=getchar();
+	while(1){
+	inputMenu=getchar();
+	if(inputMenu=='\n'){
+		break;
+	}
+	}
 	char input;
 	int flag;
 
@@ -263,16 +356,33 @@ int main(){
 		while(1){
 			atualizaTempo();
 			menu(2);
+			printf("OPCAO: ");
 			input=getchar();
 			tempo_atual=time(0);
+			if(existe_bomba){
+				if(atualizaTempoBomba()==4){
+					if(fimDeJogo(explodeBomba())){
+						getchar();
+						break;
+					}
+				}
+			}
 			flag=fimDeJogo(funcoesInput(input));
 			if(fimDeJogo(atualizaTempo())){
+				getchar();
 				break;
+			/*checa se precionou E*/
 			}else if(flag){
+				getchar();
+				break;
+			}else if(numeroDeInimigos==0){
+				fimDeJogo(5);
+				getchar();
 				break;
 			}
-			
 		}
+		getchar();
+		clear();
 	}
 	return 0;
 }
