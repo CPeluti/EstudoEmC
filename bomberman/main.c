@@ -146,16 +146,32 @@ int explodeBomba(){
 		numeroDeInimigos--;
 		tabuleiro[posicaoBomba[0]][posicaoBomba[1]-1]=' ';
 	}if(tabuleiro[posicaoBomba[0]+1][posicaoBomba[1]]=='#'){
-		numeroDeInimigos--;
 		tabuleiro[posicaoBomba[0]+1][posicaoBomba[1]]=' ';
 	}if(tabuleiro[posicaoBomba[0]-1][posicaoBomba[1]]=='#'){
-		numeroDeInimigos--;
 		tabuleiro[posicaoBomba[0]-1][posicaoBomba[1]]=' ';
 	}if(tabuleiro[posicaoBomba[0]][posicaoBomba[1]+1]=='#'){
-		numeroDeInimigos--;
 		tabuleiro[posicaoBomba[0]][posicaoBomba[1]+1]=' ';
 	}if(tabuleiro[posicaoBomba[0]][posicaoBomba[1]-1]=='#'){
+		tabuleiro[posicaoBomba[0]][posicaoBomba[1]-1]=' ';
+	}if(tabuleiro[posicaoBomba[0]+1][posicaoBomba[1]+1]=='@'){
 		numeroDeInimigos--;
+		tabuleiro[posicaoBomba[0]+1][posicaoBomba[1]+1]=' ';
+	}if(tabuleiro[posicaoBomba[0]-1][posicaoBomba[1]-1]=='@'){
+		numeroDeInimigos--;
+		tabuleiro[posicaoBomba[0]-1][posicaoBomba[1]-1]=' ';
+	}if(tabuleiro[posicaoBomba[0]-1][posicaoBomba[1]+1]=='@'){
+		numeroDeInimigos--;
+		tabuleiro[posicaoBomba[0]-1][posicaoBomba[1]+1]=' ';
+	}if(tabuleiro[posicaoBomba[0]][posicaoBomba[1]-1]=='@'){
+		numeroDeInimigos--;
+		tabuleiro[posicaoBomba[0]][posicaoBomba[1]-1]=' ';
+	}if(tabuleiro[posicaoBomba[0]+1][posicaoBomba[1]+1]=='#'){
+		tabuleiro[posicaoBomba[0]+1][posicaoBomba[1]+1]=' ';
+	}if(tabuleiro[posicaoBomba[0]-1][posicaoBomba[1]-1]=='#'){
+		tabuleiro[posicaoBomba[0]-1][posicaoBomba[1]-1]=' ';
+	}if(tabuleiro[posicaoBomba[0]-1][posicaoBomba[1]+1]=='#'){
+		tabuleiro[posicaoBomba[0]-1][posicaoBomba[1]+1]=' ';
+	}if(tabuleiro[posicaoBomba[0]][posicaoBomba[1]-1]=='#'){
 		tabuleiro[posicaoBomba[0]][posicaoBomba[1]-1]=' ';
 	}
 	tabuleiro[posicaoBomba[0]][posicaoBomba[1]]=' ';
