@@ -11,6 +11,16 @@
 
 #define DURACAO_PARTIDA 200
 
+typedef struct{
+	char nomeJogador[20];
+	char tabuleiro[15][28];
+	int tempo;
+	int tempo_partida;
+	int numeroDeInimigos;
+}partidaSalva;
+
+
+char nome[20];
 /*matriz onde o jogo ocorrera*/
 char tabuleiro[15][28];
 /*tempo que falta para a bomba explodir*/
@@ -38,6 +48,21 @@ void clear(){
 	system("@cls||clear");
 }
 
+void salvaJogo(){
+	FILE* arquivo;
+	partidaSalva save;
+	int i;
+	strcpy(save.nomeJogador,nome);
+	for(i=0;i<15;i++){
+		strcpy(save.tabuleiro[i],tabuleiro[i]);
+	}
+	save.tempo_partida=tempo_partida;
+	save.tempo=tempo;
+	save.numeroDeInimigos=numeroDeInimigos;
+	arquivo=fopen("save.bin","a+b");
+	fwrite(&save,sizeof(partidaSalva),1,arquivo);
+	fclose(arquivo);
+}
 
 int atualizaTempo(){
 	tempo_partida=DURACAO_PARTIDA-(tempo_atual-tempo_start);
@@ -94,7 +119,7 @@ void printaMatriz(){
 }
 
 
-void menu(int select){
+int menu(int select){
 	switch(select){
 		case 1:
 			clear();
@@ -111,9 +136,44 @@ void menu(int select){
 			printf("A = ESQUERDA	 	D = DIREITA 	 	S = CIMA\nX = BAIXO 		B = BOMBA 		E = ENCERRAR\n");
 			printaMatriz();
 			break;
+		
 		default:
-		break;
+			clear();
+			printf("************************ BOMBERMAN ************************ \n");
+			printf("\n");
+			printf("\n");
+			printf("\n");
+			printf("1.\t JOGAR\n");
+			printf("2.\t CONTINUAR JOGO\n");
+			printf("3.\t RANKING\n");
+			printf("4.\t SAIR\n");
+			printf("\nOPCAO: ");
+			char inputmenu;
+			scanf("%c",&inputmenu);
+			while(inputmenu!='1'&&inputmenu!='2'&&inputmenu!='3'&&inputmenu!='4'){
+				inputmenu=getchar();
+			}
+			switch(inputmenu){
+				case '1':
+					return 1;
+					break;
+				case '2':
+					return 2;
+					break;
+				case '3':
+					return 3;
+					break;
+				case '4':
+					return 4;
+					break;
+				default:
+					return 0;
+					break;
+			}
+			break;
 	}
+	return 0;
+
 }
 
 void criaBomba(){
@@ -136,42 +196,33 @@ int explodeBomba(){
 	if(tabuleiro[posicaoBomba[0]+1][posicaoBomba[1]]=='@'){
 		numeroDeInimigos--;
 		tabuleiro[posicaoBomba[0]+1][posicaoBomba[1]]=' ';
+
 	}if(tabuleiro[posicaoBomba[0]-1][posicaoBomba[1]]=='@'){
 		numeroDeInimigos--;
 		tabuleiro[posicaoBomba[0]-1][posicaoBomba[1]]=' ';
+	
 	}if(tabuleiro[posicaoBomba[0]][posicaoBomba[1]+1]=='@'){
 		numeroDeInimigos--;
 		tabuleiro[posicaoBomba[0]][posicaoBomba[1]+1]=' ';
+	
 	}if(tabuleiro[posicaoBomba[0]][posicaoBomba[1]-1]=='@'){
 		numeroDeInimigos--;
 		tabuleiro[posicaoBomba[0]][posicaoBomba[1]-1]=' ';
+	
 	}if(tabuleiro[posicaoBomba[0]+1][posicaoBomba[1]]=='#'){
+		numeroDeInimigos--;
 		tabuleiro[posicaoBomba[0]+1][posicaoBomba[1]]=' ';
+	
 	}if(tabuleiro[posicaoBomba[0]-1][posicaoBomba[1]]=='#'){
+		numeroDeInimigos--;
 		tabuleiro[posicaoBomba[0]-1][posicaoBomba[1]]=' ';
+	
 	}if(tabuleiro[posicaoBomba[0]][posicaoBomba[1]+1]=='#'){
+		numeroDeInimigos--;
 		tabuleiro[posicaoBomba[0]][posicaoBomba[1]+1]=' ';
+	
 	}if(tabuleiro[posicaoBomba[0]][posicaoBomba[1]-1]=='#'){
-		tabuleiro[posicaoBomba[0]][posicaoBomba[1]-1]=' ';
-	}if(tabuleiro[posicaoBomba[0]+1][posicaoBomba[1]+1]=='@'){
 		numeroDeInimigos--;
-		tabuleiro[posicaoBomba[0]+1][posicaoBomba[1]+1]=' ';
-	}if(tabuleiro[posicaoBomba[0]-1][posicaoBomba[1]-1]=='@'){
-		numeroDeInimigos--;
-		tabuleiro[posicaoBomba[0]-1][posicaoBomba[1]-1]=' ';
-	}if(tabuleiro[posicaoBomba[0]-1][posicaoBomba[1]+1]=='@'){
-		numeroDeInimigos--;
-		tabuleiro[posicaoBomba[0]-1][posicaoBomba[1]+1]=' ';
-	}if(tabuleiro[posicaoBomba[0]][posicaoBomba[1]-1]=='@'){
-		numeroDeInimigos--;
-		tabuleiro[posicaoBomba[0]][posicaoBomba[1]-1]=' ';
-	}if(tabuleiro[posicaoBomba[0]+1][posicaoBomba[1]+1]=='#'){
-		tabuleiro[posicaoBomba[0]+1][posicaoBomba[1]+1]=' ';
-	}if(tabuleiro[posicaoBomba[0]-1][posicaoBomba[1]-1]=='#'){
-		tabuleiro[posicaoBomba[0]-1][posicaoBomba[1]-1]=' ';
-	}if(tabuleiro[posicaoBomba[0]-1][posicaoBomba[1]+1]=='#'){
-		tabuleiro[posicaoBomba[0]-1][posicaoBomba[1]+1]=' ';
-	}if(tabuleiro[posicaoBomba[0]][posicaoBomba[1]-1]=='#'){
 		tabuleiro[posicaoBomba[0]][posicaoBomba[1]-1]=' ';
 	}
 	tabuleiro[posicaoBomba[0]][posicaoBomba[1]]=' ';
@@ -266,6 +317,7 @@ int funcoesInput(int input){
 				}
 
 			}else if(input=='E'||input=='e'){
+				salvaJogo();
 				return 0;
 
 			}else if(input=='B'||input=='b'){
@@ -354,21 +406,53 @@ void rotinaDeStart(){
 
 int main(){
 	char inputMenu;
-	inicializaTabuleiro();
-	menu(1);
-	
-	printf("Tecle <enter> para começar o jogo\n");
 	while(1){
-	inputMenu=getchar();
-	if(inputMenu=='\n'){
-		break;
-	}
+		int returnMenu=menu(0);
+		if(returnMenu==4){
+			return 0;
+		}
+		else if(returnMenu==1){
+			printf("Digite seu nome: ");
+			scanf("%s",nome);
+			menu(1);
+			inicializaTabuleiro();
+			printf("Tecle <enter> para começar o jogo\n");
+			while(1){
+				inputMenu=getchar();
+				if(inputMenu=='\n'){
+					rotinaDeStart();
+					break;
+				}
+			}		
+			break;		
+		}else if(returnMenu==2){
+			int i;
+			partidaSalva save;
+			FILE* arquivo;
+			arquivo=fopen("save.bin","rb");
+			if(arquivo==NULL){
+				printf("Nenhum jogo salvo foi encontrado\n");
+				getchar();
+			}else{
+				fread(&save, sizeof(partidaSalva),1,arquivo);
+				strcpy(nome,save.nomeJogador);
+				for(i=0;i<15;i++){
+					strcpy(tabuleiro[i],save.tabuleiro[i]);
+				}
+				tempo_partida=save.tempo_partida;
+				tempo=save.tempo;
+				numeroDeInimigos=save.numeroDeInimigos;
+				tempo_start=time(0);
+				tempo_atual=time(0);
+				srand(time(0));
+				break;
+			}
+		}
 	}
 	char input;
 	int flag;
 
 	if(inputMenu=='\n'){
-		rotinaDeStart();
 		while(1){
 			atualizaTempo();
 			menu(2);
