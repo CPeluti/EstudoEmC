@@ -21,6 +21,13 @@ typedef struct{
 
 
 char nome[20];
+
+#ifdef _WIN32
+#define CLEAR "cls"
+#else 
+#define CLEAR "clear"
+#endif
+
 /*matriz onde o jogo ocorrera*/
 char tabuleiro[15][28];
 /*tempo que falta para a bomba explodir*/
@@ -45,7 +52,7 @@ int posicaoBomba[2];
 
 void clear(){
 	printf("\n");
-	system("@cls||clear");
+	system(CLEAR);
 }
 
 void salvaJogo(){
@@ -366,19 +373,19 @@ int fimDeJogo(int type){
 		case 2:
 			clear();
 			printaMatriz();
-			printf("\nQue pena, você se explodiu. Você Perdeu!!\n");
+			printf("\nQue pena, você se explodiu. Voce Perdeu!!\n");
 			return 1;
 			break;
 		case 3:
 			clear();
 			printaMatriz();
-			printf("\nQue pena, você foi morto por um inimigo. Você Perdeu!!\n");
+			printf("\nQue pena, você foi morto por um inimigo. Voce Perdeu!!\n");
 			return 1;
 			break;
 		case 4:
 			clear();
 			printaMatriz();
-			printf("\nQue pena, Tempo esgotado. Você Perdeu!!\n");
+			printf("\nQue pena, Tempo esgotado. Voce Perdeu!!\n");
 			return 1;
 			break;
 		case 5:
