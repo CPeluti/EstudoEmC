@@ -468,6 +468,7 @@ int main(){
 				posicaoBomba[0]=save.posicaoBomba[0];
 				posicaoBomba[1]=save.posicaoBomba[1];
 				existe_bomba=save.existe_bomba;
+				tempo_start_bomba=time(0);
 				tempo_start=time(0);
 				tempo_atual=time(0);
 				srand(time(0));
