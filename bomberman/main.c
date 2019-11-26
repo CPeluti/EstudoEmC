@@ -9,7 +9,7 @@
 /* expressao que gera um numero aleatorio no intervalo [M - E, M + E]*/
 #define RAND(M,E) (M+(rand()%(2*E+1)-E))
 
-#define DURACAO_PARTIDA 200
+ 
 
 typedef struct{
 	char nomeJogador[20];
@@ -17,6 +17,9 @@ typedef struct{
 	int tempo;
 	int tempo_partida;
 	int numeroDeInimigos;
+	int posicaoBoneco[2];
+	int posicaoBomba[2];
+	int existe_bomba;
 }partidaSalva;
 
 
@@ -28,12 +31,13 @@ char nome[20];
 #define CLEAR "clear"
 #endif
 
+int DURACAO_PARTIDA=200;
 /*matriz onde o jogo ocorrera*/
 char tabuleiro[15][28];
 /*tempo que falta para a bomba explodir*/
 int tempo; 
 /*tempo que falta para a partida acabar*/
-int tempo_partida=DURACAO_PARTIDA;
+int tempo_partida;
 /* tempo em segundos do momento atual*/
 long int tempo_atual;
 /*tempo em segundos de quado foi iniciado a jogatina*/
@@ -64,16 +68,21 @@ void salvaJogo(){
 		strcpy(save.tabuleiro[i],tabuleiro[i]);
 	}
 	save.tempo_partida=tempo_partida;
-	save.tempo=tempo;
+	save.tempo=tempo-(tempo_atual-tempo_start_bomba);
 	save.numeroDeInimigos=numeroDeInimigos;
-	arquivo=fopen("save.bin","a+b");
+	save.posicaoBoneco[0]=posicaoBoneco[0];
+	save.posicaoBoneco[1]=posicaoBoneco[1];
+	save.posicaoBomba[0]=posicaoBomba[0];
+	save.posicaoBomba[1]=posicaoBomba[1];
+	save.existe_bomba=existe_bomba;
+	arquivo=fopen("save.bin","w+b");
 	fwrite(&save,sizeof(partidaSalva),1,arquivo);
 	fclose(arquivo);
 }
 
 int atualizaTempo(){
 	tempo_partida=DURACAO_PARTIDA-(tempo_atual-tempo_start);
-	if(tempo_partida<=0){
+	if(tempo_partida-(tempo_atual-tempo_start)<=0){
 		return 4;
 	}else{
 		return 404;
@@ -199,8 +208,11 @@ int explodeBomba(){
 	if((tabuleiro[posicaoBomba[0]+1][posicaoBomba[1]]=='&')||(tabuleiro[posicaoBomba[0]-1][posicaoBomba[1]]=='&')||(tabuleiro[posicaoBomba[0]][posicaoBomba[1]+1]=='&')||(tabuleiro[posicaoBomba[0]][posicaoBomba[1]-1]=='&')||(posicaoBoneco[0]==posicaoBomba[0]&&posicaoBoneco[1]==posicaoBomba[1])){
 		flag=2;
 		tabuleiro[posicaoBoneco[0]][posicaoBoneco[1]]=' ';
-	}
-	if(tabuleiro[posicaoBomba[0]+1][posicaoBomba[1]]=='@'){
+	}if((tabuleiro[posicaoBomba[0]+1][posicaoBomba[1]+1]=='&')||(tabuleiro[posicaoBomba[0]-1][posicaoBomba[1]-1]=='&')||(tabuleiro[posicaoBomba[0]+1][posicaoBomba[1]-1]=='&')||(tabuleiro[posicaoBomba[0]-1][posicaoBomba[1]+1]=='&')){
+		flag=2;
+		tabuleiro[posicaoBoneco[0]][posicaoBoneco[1]]=' ';
+	
+	}if(tabuleiro[posicaoBomba[0]+1][posicaoBomba[1]]=='@'){
 		numeroDeInimigos--;
 		tabuleiro[posicaoBomba[0]+1][posicaoBomba[1]]=' ';
 
@@ -440,18 +452,26 @@ int main(){
 			if(arquivo==NULL){
 				printf("Nenhum jogo salvo foi encontrado\n");
 				getchar();
+				getchar();
 			}else{
 				fread(&save, sizeof(partidaSalva),1,arquivo);
 				strcpy(nome,save.nomeJogador);
 				for(i=0;i<15;i++){
 					strcpy(tabuleiro[i],save.tabuleiro[i]);
 				}
-				tempo_partida=save.tempo_partida;
+				printf("teste: %d",save.tempo_partida);
+				DURACAO_PARTIDA=save.tempo_partida;
 				tempo=save.tempo;
 				numeroDeInimigos=save.numeroDeInimigos;
+				posicaoBoneco[0]=save.posicaoBoneco[0];
+				posicaoBoneco[1]=save.posicaoBoneco[1];
+				posicaoBomba[0]=save.posicaoBomba[0];
+				posicaoBomba[1]=save.posicaoBomba[1];
+				existe_bomba=save.existe_bomba;
 				tempo_start=time(0);
 				tempo_atual=time(0);
 				srand(time(0));
+				fclose(arquivo);
 				break;
 			}
 		}
@@ -459,7 +479,7 @@ int main(){
 	char input;
 	int flag;
 
-	if(inputMenu=='\n'){
+	/*if(inputMenu=='\n'){*/
 		while(1){
 			atualizaTempo();
 			menu(2);
@@ -490,6 +510,6 @@ int main(){
 		}
 		getchar();
 		clear();
-	}
+	/*}*/
 	return 0;
 }
