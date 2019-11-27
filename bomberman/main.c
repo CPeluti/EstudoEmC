@@ -9,7 +9,7 @@
 /* expressao que gera um numero aleatorio no intervalo [M - E, M + E]*/
 #define RAND(M,E) (M+(rand()%(2*E+1)-E))
 
- 
+
 
 typedef struct{
 	char nomeJogador[20];
@@ -22,6 +22,10 @@ typedef struct{
 	int existe_bomba;
 }partidaSalva;
 
+typedef struct{
+	char nomeJogador[20];
+	int tempo_partida;
+}tipoRanking;
 
 char nome[20];
 
@@ -58,7 +62,54 @@ void clear(){
 	printf("\n");
 	system(CLEAR);
 }
+void criaRanking(){
+	int i,m=0;
+	tipoRanking aux,aux2,atual;
+	atual.tempo_partida=tempo_partida;
+	strcpy(atual.nomeJogador,nome);
+	tipoRanking* vet;
+	vet=(tipoRanking*)malloc(m*sizeof(tipoRanking));		
+	FILE* fd;
+	fd=fopen("ranking.txt","r");
+	if(fd==NULL){
+		fclose(fd);
+		fd=fopen("ranking.txt","w");
+		fprintf(fd,"%s %d\n",atual.nomeJogador,atual.tempo_partida);
+	}else{
+		while(!feof(fd)){
+			m++;
+			vet=realloc(vet,m*sizeof(tipoRanking));
+			fscanf(fd,"%s %d",vet[m-1].nomeJogador,&vet[m-1].tempo_partida);
+		}
+		vet=realloc(vet,(m+1)*sizeof(tipoRanking));
 
+		for(i=0;i<m;i++){
+			if(vet[i].tempo_partida<tempo_partida){
+				aux=vet[i];
+				vet[i]=atual;
+				break;
+			}
+		}
+		if(i==m){
+			vet[i]=atual;
+		}else{
+			m++;
+			for(i=i+1;i<m;i++){
+				aux2=vet[i];
+				vet[i]=aux;
+				aux=aux2;
+			}
+		}
+		fclose(fd);
+		fd=fopen("ranking.txt","w");
+		for(i=0;i<m;i++){	
+			fprintf(fd,"%s %d\n",vet[i].nomeJogador,vet[i].tempo_partida);
+		}
+		fclose(fd);	
+	free(vet);
+
+	}
+}
 void salvaJogo(){
 	FILE* arquivo;
 	partidaSalva save;
@@ -82,7 +133,7 @@ void salvaJogo(){
 
 int atualizaTempo(){
 	tempo_partida=DURACAO_PARTIDA-(tempo_atual-tempo_start);
-	if(tempo_partida-(tempo_atual-tempo_start)<=0){
+	if(tempo_partida<=0){
 		return 4;
 	}else{
 		return 404;
@@ -203,6 +254,7 @@ void criaBomba(){
 	existe_bomba=1;
 
 }
+
 int explodeBomba(){
 	int flag=404;
 	if((tabuleiro[posicaoBomba[0]+1][posicaoBomba[1]]=='&')||(tabuleiro[posicaoBomba[0]-1][posicaoBomba[1]]=='&')||(tabuleiro[posicaoBomba[0]][posicaoBomba[1]+1]=='&')||(tabuleiro[posicaoBomba[0]][posicaoBomba[1]-1]=='&')||(posicaoBoneco[0]==posicaoBomba[0]&&posicaoBoneco[1]==posicaoBomba[1])){
@@ -229,26 +281,21 @@ int explodeBomba(){
 		tabuleiro[posicaoBomba[0]][posicaoBomba[1]-1]=' ';
 	
 	}if(tabuleiro[posicaoBomba[0]+1][posicaoBomba[1]]=='#'){
-		numeroDeInimigos--;
 		tabuleiro[posicaoBomba[0]+1][posicaoBomba[1]]=' ';
 	
 	}if(tabuleiro[posicaoBomba[0]-1][posicaoBomba[1]]=='#'){
-		numeroDeInimigos--;
 		tabuleiro[posicaoBomba[0]-1][posicaoBomba[1]]=' ';
 	
 	}if(tabuleiro[posicaoBomba[0]][posicaoBomba[1]+1]=='#'){
-		numeroDeInimigos--;
 		tabuleiro[posicaoBomba[0]][posicaoBomba[1]+1]=' ';
 	
 	}if(tabuleiro[posicaoBomba[0]][posicaoBomba[1]-1]=='#'){
-		numeroDeInimigos--;
 		tabuleiro[posicaoBomba[0]][posicaoBomba[1]-1]=' ';
 	}
 	tabuleiro[posicaoBomba[0]][posicaoBomba[1]]=' ';
 	existe_bomba=0;
 	return flag;	
 }
-
 
 int funcoesInput(int input){
 	if(input=='A'||input=='a'){
@@ -346,6 +393,8 @@ int funcoesInput(int input){
 					return 1;
 				}
 				return 1;
+			}else if(input=='P'||input=='p'){
+				return 5;
 			}else{
 				return 1;
 			}
@@ -404,6 +453,7 @@ int fimDeJogo(int type){
 			clear();
 			printaMatriz();
 			printf("\nVitoria! todos os inimigos foram eliminados.\n");
+			criaRanking();
 			return 1;
 			break;
 
@@ -511,6 +561,7 @@ int main(){
 		}
 		getchar();
 		clear();
-	/*}*/
-	return 0;
-}
+		return 0;
+	}
+	
+/*}*/
