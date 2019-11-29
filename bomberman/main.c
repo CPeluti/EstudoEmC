@@ -62,26 +62,48 @@ void clear(){
 	printf("\n");
 	system(CLEAR);
 }
+void printaRanking(){
+	int i,m=1;
+	tipoRanking* vet;
+	vet=(tipoRanking*)malloc(sizeof(tipoRanking)*m);
+	FILE* fd;
+	fd=fopen("ranking.txt","r");	
+	if(fd==NULL){
+		printf("Nenhum ranking encontrado!");
+	}else{
+		while(!feof(fd)){
+			
+			vet=(tipoRanking*)realloc(vet,m*sizeof(tipoRanking));
+			fscanf(fd,"%s %d",vet[m-1].nomeJogador,&vet[m-1].tempo_partida);
+			m++;
+		}
+	}
+	for(i=0;i<m-1;i++){
+		printf("%d\t%s\t%d\n",(i+1),vet[i].nomeJogador,vet[i].tempo_partida);
+	}
+}
 void criaRanking(){
 	int i,m=0;
+	tipoRanking* vet;
+	vet=(tipoRanking*)malloc(sizeof(tipoRanking)*m);
+	FILE* fd;
+	fd=fopen("ranking.txt","r");	
+	
 	tipoRanking aux,aux2,atual;
 	atual.tempo_partida=tempo_partida;
 	strcpy(atual.nomeJogador,nome);
-	tipoRanking* vet;
-	vet=(tipoRanking*)malloc(m*sizeof(tipoRanking));		
-	FILE* fd;
-	fd=fopen("ranking.txt","r");
+	
 	if(fd==NULL){
-		fclose(fd);
 		fd=fopen("ranking.txt","w");
-		fprintf(fd,"%s %d\n",atual.nomeJogador,atual.tempo_partida);
+		fprintf(fd,"%s %d",atual.nomeJogador,atual.tempo_partida);
 	}else{
 		while(!feof(fd)){
 			m++;
-			vet=realloc(vet,m*sizeof(tipoRanking));
+			vet=(tipoRanking*)realloc(vet,m*sizeof(tipoRanking));
 			fscanf(fd,"%s %d",vet[m-1].nomeJogador,&vet[m-1].tempo_partida);
 		}
-		vet=realloc(vet,(m+1)*sizeof(tipoRanking));
+
+		vet=(tipoRanking*)realloc(vet,(m+1)*sizeof(tipoRanking));
 
 		for(i=0;i<m;i++){
 			if(vet[i].tempo_partida<tempo_partida){
@@ -91,8 +113,13 @@ void criaRanking(){
 			}
 		}
 		if(i==m){
+			m++;
+
+			printf("teste1");
 			vet[i]=atual;
-		}else{
+		}
+		else{
+			printf("i:%d m:%d",i,m);
 			m++;
 			for(i=i+1;i<m;i++){
 				aux2=vet[i];
@@ -103,12 +130,11 @@ void criaRanking(){
 		fclose(fd);
 		fd=fopen("ranking.txt","w");
 		for(i=0;i<m;i++){	
-			fprintf(fd,"%s %d\n",vet[i].nomeJogador,vet[i].tempo_partida);
+			fprintf(fd,"\n%s %d",vet[i].nomeJogador,vet[i].tempo_partida);
 		}
-		fclose(fd);	
-	free(vet);
-
 	}
+	fclose(fd);
+	free(vet);
 }
 void salvaJogo(){
 	FILE* arquivo;
@@ -130,7 +156,6 @@ void salvaJogo(){
 	fwrite(&save,sizeof(partidaSalva),1,arquivo);
 	fclose(arquivo);
 }
-
 int atualizaTempo(){
 	tempo_partida=DURACAO_PARTIDA-(tempo_atual-tempo_start);
 	if(tempo_partida<=0){
@@ -147,8 +172,6 @@ int atualizaTempoBomba(){
 		return 404;
 	}
 }
-
-
 void inicializaTabuleiro(){
 	/*string das linhas*/
 	char string[28]="| + + + + + + + + + + + + |";
@@ -170,8 +193,6 @@ void inicializaTabuleiro(){
 		strcpy(tabuleiro[i],string2);
 	}
 }
-
-
 void printaMatriz(){
 
 	int i,j;
@@ -184,8 +205,6 @@ void printaMatriz(){
 	}
 	printf("\n");
 }
-
-
 int menu(int select){
 	switch(select){
 		case 1:
@@ -240,9 +259,7 @@ int menu(int select){
 			break;
 	}
 	return 0;
-
 }
-
 void criaBomba(){
 	tabuleiro[posicaoBoneco[0]][posicaoBoneco[1]]='*';
 	posicaoBomba[0]=posicaoBoneco[0];
@@ -252,9 +269,7 @@ void criaBomba(){
 	/*salva o instante que a bomba foi colocada*/
 	tempo_start_bomba=time(0);
 	existe_bomba=1;
-
 }
-
 int explodeBomba(){
 	int flag=404;
 	if((tabuleiro[posicaoBomba[0]+1][posicaoBomba[1]]=='&')||(tabuleiro[posicaoBomba[0]-1][posicaoBomba[1]]=='&')||(tabuleiro[posicaoBomba[0]][posicaoBomba[1]+1]=='&')||(tabuleiro[posicaoBomba[0]][posicaoBomba[1]-1]=='&')||(posicaoBoneco[0]==posicaoBomba[0]&&posicaoBoneco[1]==posicaoBomba[1])){
@@ -296,7 +311,6 @@ int explodeBomba(){
 	existe_bomba=0;
 	return flag;	
 }
-
 int funcoesInput(int input){
 	if(input=='A'||input=='a'){
 				if((posicaoBoneco[1]-1)==0){
@@ -399,8 +413,6 @@ int funcoesInput(int input){
 				return 1;
 			}
 }
-
-
 void preencheMatriz(){
 	int i,j,numero;
 	
@@ -421,8 +433,6 @@ void preencheMatriz(){
 	}
 	tabuleiro[posicaoBoneco[0]][posicaoBoneco[1]]='&';
 }
-
-
 int fimDeJogo(int type){
 	switch(type){
 		case 0:
@@ -462,17 +472,12 @@ int fimDeJogo(int type){
 			break;
 	}
 }
-
-
 void rotinaDeStart(){
 	tempo_start=time(0);
 	tempo_atual=time(0);
 	srand(time(0));
 	preencheMatriz();
-	
 }
-
-
 int main(){
 	char inputMenu;
 	while(1){
@@ -482,7 +487,9 @@ int main(){
 		}
 		else if(returnMenu==1){
 			printf("Digite seu nome: ");
-			scanf("%s",nome);
+			getchar();
+			scanf("%19[^\n]s",nome);
+			
 			menu(1);
 			inicializaTabuleiro();
 			printf("Tecle <enter> para começar o jogo\n");
@@ -525,6 +532,12 @@ int main(){
 				fclose(arquivo);
 				break;
 			}
+		}else if(returnMenu==3){
+			clear();
+
+			printaRanking();
+			getchar();
+			getchar();
 		}
 	}
 	char input;
@@ -560,8 +573,6 @@ int main(){
 			}
 		}
 		getchar();
-		clear();
 		return 0;
 	}
 	
-/*}*/
